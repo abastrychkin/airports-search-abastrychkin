@@ -8,6 +8,8 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 public class Main {
@@ -16,7 +18,8 @@ public class Main {
 
 
 
-        ArrayList<String> columnValues = new ArrayList<>();
+        //ArrayList<String> columnValues = new ArrayList<>();
+        HashMap<String, ArrayList<String>> columnValues = new HashMap<>();
         int columnNumber = 2;
 
         try {
@@ -42,7 +45,15 @@ public class Main {
 //                }
                 int index = columnNumber - 1;
 //                System.out.println(tokens[index]);
-                columnValues.add(tokens[index]);
+
+                String currentString = tokens[index].substring(1);
+                if (!currentString.isEmpty()) {
+                    columnValues.computeIfAbsent(currentString.substring(0,1), k -> new ArrayList<>()).add(currentString);
+                } else {
+                    columnValues.computeIfAbsent("", k -> new ArrayList<>()).add(currentString);
+                }
+
+
             }
 
             // close the reader
@@ -50,16 +61,18 @@ public class Main {
 
            // System.out.println(columnValues);
 
-            String searchTemplate = "\"Bo";
+            String searchTemplate = "Bo";
 
             long startTime = System.nanoTime();
 
-            ArrayList<String> finded = columnValues.stream()
+            ArrayList<String> finded = columnValues.get(searchTemplate.substring(0,1)).stream()
                     .filter(value -> value.startsWith(searchTemplate))
                     .collect(Collectors.toCollection(ArrayList::new));
 
             long endTime = System.nanoTime();
             long duration = (endTime - startTime)/1000000;  //divide by 1000000 to get milliseconds.
+
+
 
 
             System.out.println(finded);
