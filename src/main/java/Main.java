@@ -7,12 +7,17 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 public class Main {
     public static void main(String[] args) {
         System.out.println("Hello,world!");
 
-        int columnNumber = 5;
+
+
+        ArrayList<String> columnValues = new ArrayList<>();
+        int columnNumber = 2;
 
         try {
             // CSV file delimiter
@@ -35,19 +40,38 @@ public class Main {
 //                for (String token : tokens) {
 //                    System.out.print(token + " ");
 //                }
-
                 int index = columnNumber - 1;
-                System.out.println(tokens[index]);
-
+//                System.out.println(tokens[index]);
+                columnValues.add(tokens[index]);
             }
 
             // close the reader
             br.close();
+
+           // System.out.println(columnValues);
+
+            String searchTemplate = "\"Bo";
+
+            long startTime = System.nanoTime();
+
+            ArrayList<String> finded = columnValues.stream()
+                    .filter(value -> value.startsWith(searchTemplate))
+                    .collect(Collectors.toCollection(ArrayList::new));
+
+            long endTime = System.nanoTime();
+            long duration = (endTime - startTime)/1000000;  //divide by 1000000 to get milliseconds.
+
+
+            System.out.println(finded);
+            System.out.println(finded.size() + " strings");
+            System.out.println(duration + "ms");
 
         } catch (IOException ex) {
             ex.printStackTrace();
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
+
+
     }
 }
