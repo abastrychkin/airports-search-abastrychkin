@@ -15,25 +15,40 @@ public class CsvReader {
         this.delimiter = delimiter;
     }
 
-    void readValues(HashMap<String, ArrayList<String>> columnValues, int columnNumber) throws URISyntaxException, IOException {
-        URI resource = ClassLoader.getSystemClassLoader().getResource(fileName).toURI();
-        BufferedReader br = Files.newBufferedReader(Paths.get(resource));
+    public void readValues(HashMap<String, ArrayList<String>> columnValues, int columnNumber) {
 
-        String line;
-        while ((line = br.readLine()) != null) {
+        try {
+            URI resource = ClassLoader.getSystemClassLoader().getResource(fileName).toURI();
+            BufferedReader bufferedReader = Files.newBufferedReader(Paths.get(resource));
 
-            String[] tokens = line.split(delimiter);
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
 
-            int index = columnNumber - 1;
+                String[] tokens = line.split(delimiter);
 
-            String currentString = tokens[index];
-            if (!currentString.isEmpty()) {
-                columnValues.computeIfAbsent(currentString.substring(0, 1), k -> new ArrayList<String>()).add(currentString);
-            } else {
-                columnValues.computeIfAbsent("", k -> new ArrayList<String>()).add(currentString);
+                checkColumnNumber(columnNumber, tokens.length);
+
+                int index = columnNumber - 1;
+
+                String currentString = tokens[index];
+                if (!currentString.isEmpty()) {
+                    columnValues.computeIfAbsent(currentString.substring(0, 1), k -> new ArrayList<String>()).add(currentString);
+                } else {
+                    columnValues.computeIfAbsent("", k -> new ArrayList<String>()).add(currentString);
+                }
             }
+
+            bufferedReader.close();
+
+        } catch (IOException | URISyntaxException e) {
+            throw new RuntimeException(e);
         }
 
-        br.close();
+    }
+
+    private void checkColumnNumber(int columnNumber, int tokensCount) {
+        if (columnNumber > tokensCount) {
+            throw new RuntimeException("Column number is more than count of columns in file. Try to run program again");
+        }
     }
 }
