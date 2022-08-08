@@ -18,7 +18,8 @@ public class Main {
         ColumnValueStorage columnValueStorage = new HashMapArrayListColumnValueStorage();
 
         CsvReader csvReader = new CsvReader("airports.csv", ",", columnValueStorage);
-        csvReader.readValues(columnNumber);
+        csvReader.readValuesRandomAccessFile(columnNumber);
+
 
         Scanner in = new Scanner(System.in);
         enterNewTemplate(in);

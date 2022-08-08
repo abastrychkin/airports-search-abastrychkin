@@ -3,10 +3,12 @@ package datastuctures;
 public class ColumnValue {
     private String value;
     private int rowNumber;
+    long offsetInFile;
 
-    public ColumnValue(String value, int rowNumber) {
+    public ColumnValue(String value, int rowNumber, long offsetInFile) {
         this.value = value;
         this.rowNumber = rowNumber;
+        this.offsetInFile = offsetInFile;
     }
 
     public String getValue() {
@@ -15,6 +17,10 @@ public class ColumnValue {
 
     public int getRowNumber() {
         return rowNumber;
+    }
+
+    public long getOffsetInFile() {
+        return offsetInFile;
     }
 
     @Override
