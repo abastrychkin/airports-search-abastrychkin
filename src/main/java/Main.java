@@ -1,7 +1,10 @@
+import datastuctures.ColumnValue;
+import datastuctures.columnvalues.ColumnValueStorage;
+import datastuctures.columnvalues.impl.HashMapArrayListColumnValueStorage;
+
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Scanner;
-import java.util.stream.Collectors;
+
 
 public class Main {
     private static final int MIN_POSSIBLE_COLUMN_NUMBER_VALUE = 1;
@@ -12,19 +15,17 @@ public class Main {
     public static void main(String[] args) {
         parseArgs(args);
 
-        HashMap<String, ArrayList<String>> columnValues = new HashMap<>();
+        ColumnValueStorage columnValueStorage = new HashMapArrayListColumnValueStorage();
 
-        CsvReader csvReader = new CsvReader("airports.csv", ",");
-        csvReader.readValues(columnValues, columnNumber);
+        CsvReader csvReader = new CsvReader("airports.csv", ",", columnValueStorage);
+        csvReader.readValues(columnNumber);
 
         Scanner in = new Scanner(System.in);
         enterNewTemplate(in);
         while (!searchTemplate.equals("!quit")){
             long startTime = System.nanoTime();
 
-            ArrayList<String> found = columnValues.get(searchTemplate.substring(0,1)).stream()
-                    .filter(value -> value.startsWith(searchTemplate))
-                    .collect(Collectors.toCollection(ArrayList::new));
+            ArrayList<ColumnValue> found = columnValueStorage.find(searchTemplate);
 
             long endTime = System.nanoTime();
             long duration = (endTime - startTime);  //divide by 1000000 to get milliseconds.
