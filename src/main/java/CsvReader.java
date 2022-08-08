@@ -7,6 +7,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 public class CsvReader {
     private String delimiter;
@@ -56,5 +58,40 @@ public class CsvReader {
 
     public ColumnValueStorage getColumnValueStorage() {
         return columnValueStorage;
+    }
+
+    public ArrayList<String> findStringsInFile(ArrayList<ColumnValue> columnValues) {
+        ArrayList<String> result = new ArrayList<>();
+        try {
+            URI resource = ClassLoader.getSystemClassLoader().getResource(fileName).toURI();
+            BufferedReader bufferedReader = Files.newBufferedReader(Paths.get(resource));
+
+            Iterator columnValueIterator = columnValues.iterator();
+
+            ColumnValue currentValue;
+            if (columnValueIterator.hasNext()) {
+                currentValue = (ColumnValue) columnValueIterator.next();
+
+                String line;
+                int lineCounter = 0;
+                while ((line = bufferedReader.readLine()) != null) {
+                    lineCounter++;
+
+                    if (lineCounter == currentValue.getRowNumber()) {
+                        String formattedString = currentValue.getValue() + "[" + line + "]";
+                        result.add(formattedString);
+                        if (columnValueIterator.hasNext()) {
+                            currentValue = (ColumnValue) columnValueIterator.next();
+                        }
+                    }
+                }
+            }
+            bufferedReader.close();
+
+        } catch (IOException | URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
+        return result;
+
     }
 }

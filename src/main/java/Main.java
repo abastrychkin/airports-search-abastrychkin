@@ -31,7 +31,11 @@ public class Main {
             long duration = (endTime - startTime);  //divide by 1000000 to get milliseconds.
             long durationMs = (endTime - startTime)/NANOSECONDS_IS_MILLISECOND;
 
-            System.out.println(found);
+            ArrayList<String> formattedFound = csvReader.findStringsInFile(found);
+
+            for (String foundedLine: formattedFound) {
+                System.out.println(foundedLine);
+            }
             System.out.println("Row found: " + found.size());
             System.out.println("Search time: " + durationMs + "ms, "  + duration + "ns");
 
@@ -56,4 +60,6 @@ public class Main {
         System.out.println("Enter line: ");
         searchTemplate = in.nextLine();
     }
+
+
 }
