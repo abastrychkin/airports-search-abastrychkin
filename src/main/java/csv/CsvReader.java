@@ -2,6 +2,7 @@ package csv;
 
 import datastuctures.ColumnValue;
 import datastuctures.columnvaluestorage.ColumnValueStorage;
+import datastuctures.comparator.ColumnValuesNumberStringComparator;
 import helper.StringHelper;
 
 import java.io.FileNotFoundException;
@@ -63,6 +64,7 @@ public class CsvReader {
         }
         if (StringHelper.isNumeric(firstColumnValue)){
             ColumnValue.setIsNumber(true);
+            columnValueStorage.setComparator(new ColumnValuesNumberStringComparator());
         }
     }
 

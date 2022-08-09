@@ -2,6 +2,7 @@ package datastuctures.columnvaluestorage.impl;
 
 import datastuctures.ColumnValue;
 import datastuctures.columnvaluestorage.ColumnValueStorage;
+import datastuctures.comparator.ColumnValuesUsualStringComparator;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -11,7 +12,7 @@ import java.util.List;
 public class HashMapSortedArrayListColumnValueStorage implements ColumnValueStorage {
     public static final String EMPTY_STRING_KEY = "";
     private HashMap<String, ArrayList<ColumnValue>> columnValues;
-    private Comparator valuesComparator;
+    private Comparator valuesComparator = new ColumnValuesUsualStringComparator();
 
     public HashMapSortedArrayListColumnValueStorage() {
         this.columnValues = new HashMap<>();
@@ -31,7 +32,7 @@ public class HashMapSortedArrayListColumnValueStorage implements ColumnValueStor
 
     private void addSavingSort(String key, ColumnValue columnValue) {
         columnValues.computeIfAbsent(key, k -> new ArrayList<ColumnValue>()).add(columnValue);
-        columnValues.get(key).sort((a, b) -> a.getValue().compareToIgnoreCase(b.getValue()));
+        columnValues.get(key).sort(valuesComparator);
     }
 
     @Override
@@ -51,7 +52,7 @@ public class HashMapSortedArrayListColumnValueStorage implements ColumnValueStor
         return found;
     }
 
-    private static int findHighBorder(String searchTemplate, ArrayList<ColumnValue> columnValues, int index) {
+    private int findHighBorder(String searchTemplate, ArrayList<ColumnValue> columnValues, int index) {
         int highBorder = columnValues.size();
         for (int i = index; i < columnValues.size() - 1; i++) {
             ColumnValue current = columnValues.get(i);
@@ -63,7 +64,7 @@ public class HashMapSortedArrayListColumnValueStorage implements ColumnValueStor
         return highBorder;
     }
 
-    private static int findLowBorder(String searchTemplate, ArrayList<ColumnValue> columnValues, int index) {
+    private int findLowBorder(String searchTemplate, ArrayList<ColumnValue> columnValues, int index) {
         int lowBorder = 0;
         for (int i = index; i >= 0; i--) {
             ColumnValue current = columnValues.get(i);
@@ -92,5 +93,10 @@ public class HashMapSortedArrayListColumnValueStorage implements ColumnValueStor
             }
         }
         return index;
+    }
+
+    @Override
+    public void setComparator(Comparator comparator) {
+        this.valuesComparator = comparator;
     }
 }
