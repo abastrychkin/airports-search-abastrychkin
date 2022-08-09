@@ -14,6 +14,7 @@ public class Main {
     private static String searchTemplate = "";
 
     public static void main(String[] args) {
+        System.out.println("Loading...");
         parseArgs(args);
 
         ColumnValueStorage columnValueStorage = new HashMapSortedArrayListColumnValueStorage();
