@@ -22,43 +22,42 @@ public class CsvReader {
         this.columnValueStorage = columnValueStorage;
     }
 
-//    public void readValues(int columnNumber) {
-//
-//        try {
-//            URI resource = ClassLoader.getSystemClassLoader().getResource(fileName).toURI();
-//            BufferedReader bufferedReader = Files.newBufferedReader(Paths.get(resource));
-//
-//            String line;
-//            int lineCounter = 0;
-//            while ((line = bufferedReader.readLine()) != null) {
-//                lineCounter++;
-//
-//                String[] tokens = line.split(delimiter);
-//                checkColumnNumber(columnNumber, tokens.length);
-//
-//                int index = columnNumber - 1;
-//                String currentString = tokens[index];
-//                ColumnValue columnValue = new ColumnValue(currentString, lineCounter);
-//
-//                columnValueStorage.add(columnValue);
-//            }
-//
-//            bufferedReader.close();
-//
-//        } catch (IOException | URISyntaxException e) {
-//            throw new RuntimeException(e);
-//        }
-//
-//    }
+    public ColumnValueStorage getColumnValueStorage() {
+        return columnValueStorage;
+    }
+
+    public void readValuesRandomAccessFile(int columnNumber) {
+        try {
+            String resourceFile = ClassLoader.getSystemClassLoader().getResource(fileName).getFile();
+            RandomAccessFile randomAccessFile = new RandomAccessFile(resourceFile ,"r");
+
+            String line;
+            int lineCounter = 0;
+            long offset = randomAccessFile.getFilePointer();
+            while ((line = randomAccessFile.readLine()) != null) {
+                lineCounter++;
+
+                String[] tokens = line.split(delimiter);
+                checkColumnNumber(columnNumber, tokens.length);
+
+                int index = columnNumber - 1;
+                String currentString = tokens[index];
+
+                ColumnValue columnValue = new ColumnValue(currentString, lineCounter, offset);
+
+                columnValueStorage.add(columnValue);
+                offset = randomAccessFile.getFilePointer();
+            }
+            randomAccessFile.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     private void checkColumnNumber(int columnNumber, int tokensCount) {
         if (columnNumber > tokensCount) {
             throw new RuntimeException("Column number is more than count of columns in file. Try to run program again");
         }
-    }
-
-    public ColumnValueStorage getColumnValueStorage() {
-        return columnValueStorage;
     }
 
     public ArrayList<String> findStringsInFile(ArrayList<ColumnValue> columnValues) {
@@ -89,33 +88,5 @@ public class CsvReader {
         return result;
     }
 
-    public void readValuesRandomAccessFile(int columnNumber) {
 
-        try {
-            String resourceFile = ClassLoader.getSystemClassLoader().getResource(fileName).getFile();
-            RandomAccessFile randomAccessFile = new RandomAccessFile(resourceFile ,"r");
-
-            String line;
-            int lineCounter = 0;
-            while ((line = randomAccessFile.readLine()) != null) {
-                lineCounter++;
-
-                String[] tokens = line.split(delimiter);
-                checkColumnNumber(columnNumber, tokens.length);
-
-                int index = columnNumber - 1;
-                String currentString = tokens[index];
-                long offset = randomAccessFile.getFilePointer();
-                ColumnValue columnValue = new ColumnValue(currentString, lineCounter, offset);
-
-                columnValueStorage.add(columnValue);
-            }
-
-            randomAccessFile.close();
-
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-    }
 }

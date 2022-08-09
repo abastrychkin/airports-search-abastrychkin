@@ -19,8 +19,10 @@ public class HashMapArrayListColumnValueStorage implements ColumnValueStorage {
         String currentString = columnValue.getValue();
         if (!currentString.isEmpty()) {
             columnValues.computeIfAbsent(currentString.substring(0, 1), k -> new ArrayList<ColumnValue>()).add(columnValue);
+            columnValues.get(currentString.substring(0, 1)).sort((a,b) -> a.getValue().compareToIgnoreCase(b.getValue()));
         } else {
             columnValues.computeIfAbsent("", k -> new ArrayList<ColumnValue>()).add(columnValue);
+            columnValues.get("").sort((a,b) -> a.getValue().compareToIgnoreCase(b.getValue()));
         }
     }
 
