@@ -1,5 +1,8 @@
+package csv;
+
 import datastuctures.ColumnValue;
-import datastuctures.columnvalues.ColumnValueStorage;
+import datastuctures.columnvaluestorage.ColumnValueStorage;
+import helper.StringHelper;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -41,7 +44,7 @@ public class CsvReader {
     }
 
     private String processLine(int columnNumber, String line) {
-        String[] tokens = getTokens(line);
+        String[] tokens = StringHelper.getTokens(line, delimiter);
         String columnValue = StringHelper.getCurrentString(columnNumber, tokens);
         if(ColumnValue.hasQuotesInFile()) {
             columnValue = StringHelper.removeQuotes(columnValue);
@@ -49,15 +52,9 @@ public class CsvReader {
         return columnValue;
     }
 
-    //regular expression for ignoring commas in quotes
-    //https://www.baeldung.com/java-split-string-commas
-    //paragraph 4.1
-    private String[] getTokens(String line) {
-        return line.split(delimiter + "(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", -1);
-    }
 
     private void getInfoFromFirstLine(int columnNumber, String line) {
-        String[] tokens = getTokens(line);
+        String[] tokens = StringHelper.getTokens(line, delimiter);
         checkColumnNumber(columnNumber, tokens.length);
 
         String firstColumnValue = StringHelper.getCurrentString(columnNumber, tokens);

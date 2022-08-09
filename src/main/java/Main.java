@@ -1,6 +1,7 @@
+import csv.CsvReader;
 import datastuctures.ColumnValue;
-import datastuctures.columnvalues.ColumnValueStorage;
-import datastuctures.columnvalues.impl.HashMapSortedArrayListColumnValueStorage;
+import datastuctures.columnvaluestorage.ColumnValueStorage;
+import datastuctures.columnvaluestorage.impl.HashMapSortedArrayListColumnValueStorage;
 
 import java.util.List;
 import java.util.Scanner;
@@ -57,6 +58,4 @@ public class Main {
         System.out.println("Enter line: ");
         searchTemplate = in.nextLine();
     }
-
-
 }

@@ -1,8 +1,7 @@
-package datastuctures.columnvalues;
+package datastuctures.columnvaluestorage;
 
 import datastuctures.ColumnValue;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public interface ColumnValueStorage {

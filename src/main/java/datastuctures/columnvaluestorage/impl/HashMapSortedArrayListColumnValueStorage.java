@@ -1,7 +1,7 @@
-package datastuctures.columnvalues.impl;
+package datastuctures.columnvaluestorage.impl;
 
 import datastuctures.ColumnValue;
-import datastuctures.columnvalues.ColumnValueStorage;
+import datastuctures.columnvaluestorage.ColumnValueStorage;
 
 import java.util.ArrayList;
 import java.util.Comparator;
