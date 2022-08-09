@@ -3,6 +3,7 @@ import datastuctures.columnvalues.ColumnValueStorage;
 import datastuctures.columnvalues.impl.HashMapArrayListColumnValueStorage;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 
@@ -26,13 +27,16 @@ public class Main {
         while (!searchTemplate.equals("!quit")){
             long startTime = System.nanoTime();
 
-            ArrayList<ColumnValue> found = columnValueStorage.find(searchTemplate);
+            List<ColumnValue> found = columnValueStorage.find(searchTemplate);
+
+
+
+            List<String> formattedFound = csvReader.findStringsInFile(found);
 
             long endTime = System.nanoTime();
             long duration = (endTime - startTime);  //divide by 1000000 to get milliseconds.
             long durationMs = (endTime - startTime)/NANOSECONDS_IS_MILLISECOND;
 
-            ArrayList<String> formattedFound = csvReader.findStringsInFile(found);
             for (String foundedLine: formattedFound) {
                 System.out.println(foundedLine);
             }

@@ -10,6 +10,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 public class CsvReader {
     private String delimiter;
@@ -60,7 +61,7 @@ public class CsvReader {
         }
     }
 
-    public ArrayList<String> findStringsInFile(ArrayList<ColumnValue> columnValues) {
+    public List<String> findStringsInFile(List<ColumnValue> columnValues) {
         ArrayList<String> result = new ArrayList<>();
         try {
             String resourceFile = ClassLoader.getSystemClassLoader().getResource(fileName).getFile();
