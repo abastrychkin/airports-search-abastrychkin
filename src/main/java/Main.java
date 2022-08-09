@@ -2,7 +2,6 @@ import datastuctures.ColumnValue;
 import datastuctures.columnvalues.ColumnValueStorage;
 import datastuctures.columnvalues.impl.HashMapArrayListColumnValueStorage;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -19,8 +18,7 @@ public class Main {
         ColumnValueStorage columnValueStorage = new HashMapArrayListColumnValueStorage();
 
         CsvReader csvReader = new CsvReader("airports.csv", ",", columnValueStorage);
-        csvReader.readValuesRandomAccessFile(columnNumber);
-
+        csvReader.readValues(columnNumber);
 
         Scanner in = new Scanner(System.in);
         enterNewTemplate(in);
@@ -28,27 +26,27 @@ public class Main {
             long startTime = System.nanoTime();
 
             List<ColumnValue> found = columnValueStorage.find(searchTemplate);
-
-
-
-            List<String> formattedFound = csvReader.findStringsInFile(found);
+            StringBuilder formattedFound = csvReader.findStringsInFile(found);
 
             long endTime = System.nanoTime();
-            long duration = (endTime - startTime);  //divide by 1000000 to get milliseconds.
-            long durationMs = (endTime - startTime)/NANOSECONDS_IS_MILLISECOND;
+            long duration = (endTime - startTime);
+            long durationMs = duration/NANOSECONDS_IS_MILLISECOND;
 
-            for (String foundedLine: formattedFound) {
-                System.out.println(foundedLine);
-            }
-
+            System.out.println(formattedFound);
             System.out.println("Row found: " + found.size());
             System.out.println("Search time: " + durationMs + "ms, "  + duration + "ns");
 
             enterNewTemplate(in);
         }
-
         in.close();
     }
+
+    private static void printSearchResult(List<String> formattedFound) {
+        for (String foundedLine: formattedFound) {
+            System.out.println(foundedLine);
+        }
+    }
+
     private static void parseArgs(String[] args) {
         try {
             columnNumber = Integer.parseInt(args[0]);

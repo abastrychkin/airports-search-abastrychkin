@@ -4,12 +4,15 @@ import datastuctures.ColumnValue;
 import datastuctures.columnvalues.ColumnValueStorage;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class HashMapArrayListColumnValueStorage implements ColumnValueStorage {
     private HashMap<String, ArrayList<ColumnValue>> columnValues;
+    private Comparator valuesComparator;
+
 
     public HashMapArrayListColumnValueStorage() {
         this.columnValues = new HashMap<>();
@@ -18,6 +21,8 @@ public class HashMapArrayListColumnValueStorage implements ColumnValueStorage {
     @Override
     public void add(ColumnValue columnValue) {
         String currentString = columnValue.getValue();
+
+
         if (!currentString.isEmpty()) {
             columnValues.computeIfAbsent(currentString.substring(0, 1), k -> new ArrayList<ColumnValue>()).add(columnValue);
             columnValues.get(currentString.substring(0, 1)).sort((a,b) -> a.getValue().compareToIgnoreCase(b.getValue()));
