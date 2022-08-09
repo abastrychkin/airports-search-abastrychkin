@@ -1,6 +1,6 @@
 import datastuctures.ColumnValue;
 import datastuctures.columnvalues.ColumnValueStorage;
-import datastuctures.columnvalues.impl.HashMapArrayListColumnValueStorage;
+import datastuctures.columnvalues.impl.HashMapSortedArrayListColumnValueStorage;
 
 import java.util.List;
 import java.util.Scanner;
@@ -15,7 +15,7 @@ public class Main {
     public static void main(String[] args) {
         parseArgs(args);
 
-        ColumnValueStorage columnValueStorage = new HashMapArrayListColumnValueStorage();
+        ColumnValueStorage columnValueStorage = new HashMapSortedArrayListColumnValueStorage();
 
         CsvReader csvReader = new CsvReader("airports.csv", ",", columnValueStorage);
         csvReader.readValues(columnNumber);
