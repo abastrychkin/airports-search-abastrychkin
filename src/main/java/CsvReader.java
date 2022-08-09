@@ -89,6 +89,12 @@ public class CsvReader {
             ColumnValue currentValue;
             String line;
             boolean hasQuotes = ColumnValue.hasQuotesInFile();
+            String format;
+            if(hasQuotes){
+                format = "\"%s\"[%s]\n";
+            } else {
+                format = "%s[%s]\n";
+            }
             while (columnValueIterator.hasNext()) {
                 currentValue = (ColumnValue) columnValueIterator.next();
 
@@ -97,11 +103,8 @@ public class CsvReader {
 
                 String currentString = currentValue.getValue();
                 String formattedString;
-                if(hasQuotes){
-                    formattedString = String.format("\"%s\"[%s]\n",currentString, line );
-                } else {
-                    formattedString = String.format("%s[%s]\n",currentString, line );;
-                }
+
+                formattedString = String.format(format,currentString, line );;
                 result.append(formattedString);
             }
         } catch (IOException e) {

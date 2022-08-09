@@ -13,7 +13,6 @@ public class HashMapArrayListColumnValueStorage implements ColumnValueStorage {
     private HashMap<String, ArrayList<ColumnValue>> columnValues;
     private Comparator valuesComparator;
 
-
     public HashMapArrayListColumnValueStorage() {
         this.columnValues = new HashMap<>();
     }
