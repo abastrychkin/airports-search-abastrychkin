@@ -40,15 +40,15 @@ public class HashMapSortedArrayListColumnValueStorage implements ColumnValueStor
         //check searchTemplate is empty
         String firstSymbol = searchTemplate.substring(0, 1);
         //check if key exists
-        ArrayList<ColumnValue> columnValues = this.columnValues.get(firstSymbol);
+        ArrayList<ColumnValue> columnValuesStarsFromFirstSymbol = new ArrayList<>(this.columnValues.get(firstSymbol));
         // check if not found
-        int index = binarySearch(columnValues, searchTemplate, 0, columnValues.size() - 1);
+        int index = binarySearch(columnValuesStarsFromFirstSymbol, searchTemplate, 0, columnValuesStarsFromFirstSymbol.size() - 1);
 
         List<ColumnValue> found;
 
-        int lowBorder = findLowBorder(searchTemplate, columnValues, index);
-        int highBorder = findHighBorder(searchTemplate, columnValues, index);
-        found = columnValues.subList(lowBorder, highBorder);
+        int lowBorder = findLowBorder(searchTemplate, columnValuesStarsFromFirstSymbol, index);
+        int highBorder = findHighBorder(searchTemplate, columnValuesStarsFromFirstSymbol, index);
+        found = columnValuesStarsFromFirstSymbol.subList(lowBorder, highBorder);
         return found;
     }
 
@@ -93,10 +93,5 @@ public class HashMapSortedArrayListColumnValueStorage implements ColumnValueStor
             }
         }
         return index;
-    }
-
-    @Override
-    public void setComparator(Comparator comparator) {
-        this.valuesComparator = comparator;
     }
 }

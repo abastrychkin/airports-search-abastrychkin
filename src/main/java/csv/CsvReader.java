@@ -64,7 +64,6 @@ public class CsvReader {
         }
         if (StringHelper.isNumeric(firstColumnValue)){
             ColumnValue.setIsNumber(true);
-            columnValueStorage.setComparator(new ColumnValuesNumberStringComparator());
         }
     }
 
@@ -87,6 +86,11 @@ public class CsvReader {
 
     public StringBuilder getFormattedFoundedStrings(List<ColumnValue> columnValues) {
         StringBuilder result = new StringBuilder();
+
+        if (ColumnValue.isNumber()){
+            columnValues.sort(new ColumnValuesNumberStringComparator());
+        }
+
         try (RandomAccessFile randomAccessFile = getRandomAccessFile()) {
             Iterator columnValueIterator = columnValues.iterator();
 
