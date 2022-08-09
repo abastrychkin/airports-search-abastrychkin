@@ -34,6 +34,7 @@ public class HashMapArrayListColumnValueStorage implements ColumnValueStorage {
 
     @Override
     public List<ColumnValue> find(String searchTemplate) {
+        //check searchTemplate is empty
         ArrayList<ColumnValue> columnValues1 = columnValues.get(searchTemplate.substring(0,1));
         int index = binarySearchIteratively(columnValues1, searchTemplate, 0, columnValues1.size() - 1);
 
