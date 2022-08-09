@@ -26,7 +26,7 @@ public class Main {
             long startTime = System.nanoTime();
 
             List<ColumnValue> found = columnValueStorage.find(searchTemplate);
-            StringBuilder formattedFound = csvReader.findStringsInFile(found);
+            StringBuilder formattedFound = csvReader.getFormattedFoundedStrings(found);
 
             long endTime = System.nanoTime();
             long duration = (endTime - startTime);
@@ -39,12 +39,6 @@ public class Main {
             enterNewTemplate(in);
         }
         in.close();
-    }
-
-    private static void printSearchResult(List<String> formattedFound) {
-        for (String foundedLine: formattedFound) {
-            System.out.println(foundedLine);
-        }
     }
 
     private static void parseArgs(String[] args) {

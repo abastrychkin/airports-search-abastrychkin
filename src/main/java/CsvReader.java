@@ -4,7 +4,6 @@ import datastuctures.columnvalues.ColumnValueStorage;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -19,59 +18,51 @@ public class CsvReader {
         this.columnValueStorage = columnValueStorage;
     }
 
-    public ColumnValueStorage getColumnValueStorage() {
-        return columnValueStorage;
-    }
-
     public void readValues(int columnNumber) {
         try (RandomAccessFile randomAccessFile = getRandomAccessFile()) {
             String line = randomAccessFile.readLine();
             int lineCounter = 0;
-            long offset = randomAccessFile.getFilePointer();
+            long offset = 0;
 
             if (line != null) {
-                lineCounter++;
-
-                String[] tokens = line.split(delimiter);
-                checkColumnNumber(columnNumber, tokens.length);
-
-                int index = columnNumber - 1;
-                String currentString = tokens[index];
-
-                if (currentString.startsWith("\"") & currentString.endsWith("\"") ) {
-                    ColumnValue.setHasQuotesInFile(true);
-                }
-                if (isNumeric(currentString)){
-                    ColumnValue.setIsNumber(true);
-                }
-
-                if(ColumnValue.hasQuotesInFile()) {
-                    currentString = currentString.substring(1, currentString.length() -1);
-                }
-                ColumnValue columnValue = new ColumnValue(currentString, lineCounter, offset);
-
-                columnValueStorage.add(columnValue);
-                offset = randomAccessFile.getFilePointer();
+                getInfoFromFirstLine(columnNumber, line);
+                randomAccessFile.seek(0);
             }
-
             while ((line = randomAccessFile.readLine()) != null) {
                 lineCounter++;
-
-                String[] tokens = line.split(delimiter);
-
-                int index = columnNumber - 1;
-                String currentString = tokens[index];
-
-                if(ColumnValue.hasQuotesInFile()) {
-                    currentString = currentString.substring(1, currentString.length() -1);
-                }
-                ColumnValue columnValue = new ColumnValue(currentString, lineCounter, offset);
-
+                String currentColumnValue = processLine(columnNumber, line);
+                ColumnValue columnValue = new ColumnValue(currentColumnValue, lineCounter, offset);
                 columnValueStorage.add(columnValue);
                 offset = randomAccessFile.getFilePointer();
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    private String processLine(int columnNumber, String line) {
+        String[] tokens = getTokens(line);
+        String columnValue = StringHelper.getCurrentString(columnNumber, tokens);
+        if(ColumnValue.hasQuotesInFile()) {
+            columnValue = StringHelper.removeQuotes(columnValue);
+        }
+        return columnValue;
+    }
+
+    private String[] getTokens(String line) {
+        return line.split(delimiter);
+    }
+
+    private void getInfoFromFirstLine(int columnNumber, String line) {
+        String[] tokens = getTokens(line);
+        checkColumnNumber(columnNumber, tokens.length);
+
+        String firstColumnValue = StringHelper.getCurrentString(columnNumber, tokens);
+        if (StringHelper.inQuotes(firstColumnValue)) {
+            ColumnValue.setHasQuotesInFile(true);
+        }
+        if (StringHelper.isNumeric(firstColumnValue)){
+            ColumnValue.setIsNumber(true);
         }
     }
 
@@ -81,7 +72,18 @@ public class CsvReader {
         }
     }
 
-    public StringBuilder findStringsInFile(List<ColumnValue> columnValues) {
+    private RandomAccessFile getRandomAccessFile() {
+        String resourceFile = ClassLoader.getSystemClassLoader().getResource(fileName).getFile();
+        RandomAccessFile randomAccessFile = null;
+        try {
+            randomAccessFile = new RandomAccessFile(resourceFile ,"r");
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        return randomAccessFile;
+    }
+
+    public StringBuilder getFormattedFoundedStrings(List<ColumnValue> columnValues) {
         StringBuilder result = new StringBuilder();
         try (RandomAccessFile randomAccessFile = getRandomAccessFile()) {
             Iterator columnValueIterator = columnValues.iterator();
@@ -97,14 +99,9 @@ public class CsvReader {
             }
             while (columnValueIterator.hasNext()) {
                 currentValue = (ColumnValue) columnValueIterator.next();
-
-                randomAccessFile.seek(currentValue.getOffsetInFile());
-                line = randomAccessFile.readLine();
-
+                line = getLineFromFile(randomAccessFile, currentValue.getOffsetInFile());
                 String currentString = currentValue.getValue();
-                String formattedString;
-
-                formattedString = String.format(format,currentString, line );;
+                String formattedString = String.format(format,currentString, line );;
                 result.append(formattedString);
             }
         } catch (IOException e) {
@@ -113,20 +110,14 @@ public class CsvReader {
         return result;
     }
 
-    private RandomAccessFile getRandomAccessFile() {
-        String resourceFile = ClassLoader.getSystemClassLoader().getResource(fileName).getFile();
-        RandomAccessFile randomAccessFile = null;
+    private static String getLineFromFile(RandomAccessFile randomAccessFile, long offset) {
+        String line = "";
         try {
-            randomAccessFile = new RandomAccessFile(resourceFile ,"r");
-        } catch (FileNotFoundException e) {
+            randomAccessFile.seek(offset);
+            line = randomAccessFile.readLine();
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        return randomAccessFile;
+        return line;
     }
-
-    public static boolean isNumeric(String str) {
-        return str.matches("-?\\d+(\\.\\d+)?");  //match a number with optional '-' and decimal.
-    }
-
-
 }
