@@ -49,8 +49,11 @@ public class CsvReader {
         return columnValue;
     }
 
+    //regular expression for ignoring commas in quotes
+    //https://www.baeldung.com/java-split-string-commas
+    //paragraph 4.1
     private String[] getTokens(String line) {
-        return line.split(delimiter);
+        return line.split(delimiter + "(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", -1);
     }
 
     private void getInfoFromFirstLine(int columnNumber, String line) {
