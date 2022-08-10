@@ -74,7 +74,7 @@ public class CsvReader {
     }
 
     private RandomAccessFile getRandomAccessFile() {
-        String resourceFile = ClassLoader.getSystemClassLoader().getResource(fileName).getFile();
+        String resourceFile = ClassLoader.getSystemResource(fileName).getFile();
         RandomAccessFile randomAccessFile = null;
         try {
             randomAccessFile = new RandomAccessFile(resourceFile ,"r");
