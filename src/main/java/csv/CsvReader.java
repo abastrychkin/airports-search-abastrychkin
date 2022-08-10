@@ -15,6 +15,8 @@ public class CsvReader {
     private String delimiter;
     private String fileName;
     private ColumnValueStorage columnValueStorage;
+    private boolean isNumber;
+    private boolean hasQuotesInFile;
 
     public CsvReader(String fileName, String delimiter, ColumnValueStorage columnValueStorage) {
         this.fileName = fileName;
@@ -47,12 +49,11 @@ public class CsvReader {
     private String processLine(int columnNumber, String line) {
         String[] tokens = StringHelper.getTokens(line, delimiter);
         String columnValue = StringHelper.getCurrentString(columnNumber, tokens);
-        if(ColumnValue.hasQuotesInFile()) {
+        if(hasQuotesInFile) {
             columnValue = StringHelper.removeQuotes(columnValue);
         }
         return columnValue;
     }
-
 
     private void getInfoFromFirstLine(int columnNumber, String line) {
         String[] tokens = StringHelper.getTokens(line, delimiter);
@@ -60,10 +61,10 @@ public class CsvReader {
 
         String firstColumnValue = StringHelper.getCurrentString(columnNumber, tokens);
         if (StringHelper.inQuotes(firstColumnValue)) {
-            ColumnValue.setHasQuotesInFile(true);
+            hasQuotesInFile = true;
         }
         if (StringHelper.isNumeric(firstColumnValue)){
-            ColumnValue.setIsNumber(true);
+            isNumber = true;
         }
     }
 
@@ -86,7 +87,7 @@ public class CsvReader {
     public StringBuilder getFormattedFoundedStrings(List<ColumnValue> columnValues) {
         StringBuilder result = new StringBuilder();
 
-        if (ColumnValue.isNumber()){
+        if (isNumber){
             columnValues.sort(new ColumnValuesNumberStringComparator());
         }
 
@@ -95,7 +96,7 @@ public class CsvReader {
 
             ColumnValue currentValue;
             String line;
-            boolean hasQuotes = ColumnValue.hasQuotesInFile();
+            boolean hasQuotes = hasQuotesInFile;
             String format;
             if(hasQuotes){
                 format = "\"%s\"[%s]\n";

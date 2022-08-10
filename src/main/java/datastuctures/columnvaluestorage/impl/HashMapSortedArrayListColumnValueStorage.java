@@ -94,7 +94,7 @@ public class HashMapSortedArrayListColumnValueStorage implements ColumnValueStor
         return lowBorder;
     }
 
-    public int binarySearch(ArrayList<ColumnValue> sortedArray, String searchTemplate, int low, int high) {
+    private int binarySearch(ArrayList<ColumnValue> sortedArray, String searchTemplate, int low, int high) {
         int templateLength = searchTemplate.length();
         int index = Integer.MAX_VALUE;
 
