@@ -4,7 +4,7 @@
     <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
     <option name="MAIN_CLASS_NAME" value="Main" />
     <module name="airports-search-abastrychkin" />
-    <option name="PROGRAM_PARAMETERS" value="2" />
+    <option name="PROGRAM_PARAMETERS" value="5" />
     <option name="VM_PARAMETERS" value="-Xmx7m" />
     <method v="2">
       <option name="Make" enabled="true" />

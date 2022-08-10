@@ -28,7 +28,13 @@ public class Main {
             long startTime = System.nanoTime();
 
             List<ColumnValue> found = columnValueStorage.find(searchTemplate);
-            StringBuilder formattedFound = csvReader.getFormattedFoundedStrings(found);
+            StringBuilder formattedFound;
+            if (found.size() > 0) {
+                formattedFound = csvReader.getFormattedFoundedStrings(found);
+            } else {
+                formattedFound = new StringBuilder("Lines not found");
+            }
+
 
             long endTime = System.nanoTime();
             long duration = (endTime - startTime);
